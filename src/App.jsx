@@ -1,4 +1,8 @@
-import Header from "./components/Header/Header"
+import Header from "./components/header/Header"
+import HomePage from "./pages/homePage/HomePage"
+import ProfilePage from "./pages/profilePage/profilePage"
+import AuthPage from "./pages/authPage/AuthPage"
+import Footer from "./components/footer/Footer"
 
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
