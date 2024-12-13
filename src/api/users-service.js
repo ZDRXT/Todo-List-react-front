@@ -39,4 +39,30 @@ async function loginUser(userInfo) {
     }
 }
 
-export { registerUser, loginUser}
+async function verifUser() {
+    try {
+        let token = localStorage.getItem("token")
+
+        if (!token) throw "Token is undefiend!"
+
+        let res = await fetch(BASE_URL + "/user/auth", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "apikey": "abcd1234",
+                "Authorization": `Buarer ${token}`
+            }
+        })
+
+        if (!res.ok) throw "Some error"
+
+        let data = await res.json()
+        
+        return data
+    } catch (error) {
+        throw error
+    }
+}
+
+
+export { registerUser, loginUser, verifUser}

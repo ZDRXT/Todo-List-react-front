@@ -1,61 +1,72 @@
 import { registerUser } from "../../../api/users-service"
 import { useState } from "react"
-
+import { useNavigate } from "react-router-dom"
 
 const RegisterForm = () => {
-    const [registerInps, setRegisterInput] = useState({
-        author: "",
-        password: "",
-        email: ""
-    })
-    
-    const [ formMessage, setFormMessage ] = useState("")
+	const [registerInps, setRegisterInput] = useState({
+		author: "",
+		password: "",
+		email: ""
+	})
 
-    const sendForm = (event) => {
-        registerUser(registerInps).then(data => {
-            console.log(data)
-        })
-        .catch(err => {
-            setFormMessage("This user already exist")
+	const [formMessage, setFormMessage] = useState("")
 
-            setTimeout(() => {
-                setFormMessage("")
-            }, 2000)
-        })
-    }
+	const navigate = useNavigate()
 
-    return (
-        <form onSubmit={sendForm}>
-            <h2>Register</h2>
-            <input
-                required
-                type="text" 
-                placeholder="login"
-                value={registerInps.author}
-                onChange={(e) => setRegisterInput(prev => ({ ...prev, author: e.target.value }))}
-            />
+	const sendForm = (event) => {
+		event.preventDefault()
 
-            <input
-                required
-                type="password" 
-                placeholder="password"
-                value={registerInps.password}
-                onChange={(e) => setRegisterInput(prev => ({ ...prev, password: e.target.value }))}
-            />
+		registerUser(registerInps)
+			.then(data => {
+				if (data && data.token) {
+					localStorage.setItem("token", data.token)
+					setUser(data.user)
+					navigate("/profile")
+				} else {
+					setFormMessage("Some went error...")
+				}
+			})
+			.catch(err => {
+				setFormMessage("This user already exist")
 
-            <input
-                required
-                type="email" 
-                placeholder="email"
-                value={registerInps.email}
-                onChange={(e) => setRegisterInput(prev => ({ ...prev, email: e.target.value }))}
-            />
+				setTimeout(() => {
+					setFormMessage("")
+				}, 2000)
+			})
+	}
 
-            {formMessage && <p style={{color: red}}>{formMessage}</p>}
+	return (
+		<form onSubmit={sendForm}>
+			<h2>Register</h2>
+			<input
+				required
+				type="text"
+				placeholder="login"
+				value={registerInps.author}
+				onChange={(e) => setRegisterInput(prev => ({ ...prev, author: e.target.value }))}
+			/>
 
-            <button>Register</button>
-        </form>
-    )
+			<input
+				required
+				type="password"
+				placeholder="password"
+				value={registerInps.password}
+				onChange={(e) => setRegisterInput(prev => ({ ...prev, password: e.target.value }))}
+			/>
+
+			<input
+				required
+				type="email"
+				placeholder="email"
+				value={registerInps.email}
+				onChange={(e) => setRegisterInput(prev => ({ ...prev, email: e.target.value }))}
+			/>
+
+			{formMessage && <p style={{ color: "red" }}>{formMessage}</p>}
+
+			<button>Register</button>
+		</form>
+	)
 }
 
 
